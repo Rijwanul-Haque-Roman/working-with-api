@@ -1,14 +1,13 @@
-const fetchData = async (search) => {
+const fetchData = async (search, isShowAll) => {
   const response = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${search}`
   );
   const data = await response.json();
   const phones = data.data;
-  displayPhone(phones);
-  showAll(phones);
+  displayPhone(phones, isShowAll);
 };
 
-const displayPhone = (phones) => {
+const displayPhone = (phones, isShowAll) => {
   const phoneContainer = document.getElementById("phone-container");
   phoneContainer.textContent = "";
 
@@ -20,7 +19,14 @@ const displayPhone = (phones) => {
     showAllButton.classList.add("hidden", true);
   }
 
-  const phoneData = phones.slice(0, 9);
+  console.log(isShowAll);
+
+  let phoneData = phones.slice(0, 9);
+
+  if (isShowAll) {
+    phoneData = phones;
+    showAllButton.classList.add("hidden", true);
+  }
 
   phoneData.forEach((phone) => {
     const phoneCard = document.createElement("div");
@@ -54,11 +60,11 @@ const displayPhone = (phones) => {
   toggleLoadingSpinner(false);
 };
 
-const handleSearch = () => {
+const handleSearch = (isShowAll) => {
   toggleLoadingSpinner(true);
   const searchField = document.getElementById("search-field");
   const searchText = searchField.value;
-  fetchData(searchText);
+  fetchData(searchText, isShowAll);
 };
 
 const toggleLoadingSpinner = (isLoading) => {
@@ -68,6 +74,10 @@ const toggleLoadingSpinner = (isLoading) => {
   } else {
     loadingAnimation.classList.add("hidden", true);
   }
+};
+
+const showAll = () => {
+  handleSearch(true);
 };
 
 fetchData();
